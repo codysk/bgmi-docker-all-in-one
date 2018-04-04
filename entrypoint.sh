@@ -1,6 +1,7 @@
 #!/bin/bash
 
 first_lock="/bgmi_install.lock"
+bangumi_db="$BGMI_PATH/bangumi.db"
 
 data_source="bangumi_moe"	#default data source set to bangumi.moe
 admin_token="bgmi_token" #default admin token
@@ -15,11 +16,16 @@ function init_proc {
 	if [ ! -z $BGMI_SOURCE ]; then
 		data_source=$BGMI_SOURCE
 	fi
-	bgmi install
-	bgmi source $data_source
-	bgmi config ADMIN_TOKEN $admin_token
-	bgmi config SAVE_PATH /bgmi/bangumi
-	bgmi config DOWNLOAD_DELEGATE transmission-rpc
+
+	if [ ! -f $bangumi_db ]; then
+		bgmi install
+		bgmi source $data_source
+		bgmi config ADMIN_TOKEN $admin_token
+		bgmi config SAVE_PATH /bgmi/bangumi
+		bgmi config DOWNLOAD_DELEGATE transmission-rpc
+	else
+		bgmi upgrade
+	fi
 
 	mkdir -p /var/run/nginx
 	mkdir -p /bgmi/conf/bgmi
