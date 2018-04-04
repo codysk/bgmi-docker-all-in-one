@@ -53,7 +53,7 @@ get the container id:
 docker ps
 ```
 
-and get in the interface:
+and get in the container:
 ```
 docker exec -it <BGMI-CONTAINER-ID> /bin/bash
 ```
