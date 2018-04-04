@@ -25,6 +25,7 @@ function init_proc {
 		bgmi config DOWNLOAD_DELEGATE transmission-rpc
 	else
 		bgmi upgrade
+		bash /home/bgmi-docker/BGmi/bgmi/others/crontab.sh
 	fi
 
 	mkdir -p /var/run/nginx
