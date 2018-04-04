@@ -1,0 +1,16 @@
+os:
+  - linux
+services:
+  - docker
+
+script:
+  - docker build -t $DOCKERHUB_ACCOUNT/$IMAGE_NAME ./
+
+after_success:
+  - docker images
+  - if [ "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ] && [ ! -z $TRAVIS_TAG ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    docker login -u="$DOCKERHUB_ACCOUNT" -p="$DOCKERHUB_PASSWD";
+    docker tag $DOCKERHUB_ACCOUNT/$IMAGE_NAME $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG;
+    docker tag $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG $DOCKERHUB_ACCOUNT/$IMAGE_NAME:latest;
+    docker push $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG;
+    fi
