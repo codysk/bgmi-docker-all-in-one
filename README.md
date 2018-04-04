@@ -1,5 +1,8 @@
 # BGmi-docker-all-in-one
 
+[![Build Status](https://travis-ci.org/codysk/bgmi-docker-all-in-one.svg?branch=master)](https://travis-ci.org/codysk/bgmi-docker-all-in-one)
+
+a BGmi service with transmission via https://github.com/BGmi/BGmi
 ## Prerequisites
 
 a docker service with linux container
