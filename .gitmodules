@@ -1,0 +1,3 @@
+[submodule "BGmi"]
+	path = BGmi
+	url = https://github.com/BGmi/BGmi.git
