@@ -12,6 +12,7 @@ RUN { \
 	pip install 'requests[security]'; \
 	pip install 'transmissionrpc'; \
 	pip install /home/bgmi-docker/BGmi; \
+	chmod +x /home/bgmi-docker/entrypoint.sh; \
 }
 
 EXPOSE 80 9091
