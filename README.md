@@ -64,3 +64,15 @@ more command see [BGmi official repo](https://github.com/BGmi/BGmi)
 ### web interface
 
 bgmi webui is running at port 80/tcp, tranmission webui at 9091/tcp
+
+### other message
+
+Transmission is running in the docker container which behind docker bridge network by default setting.
+Docker network will NATs the container's traffic. But docker bridge not support the auto-portforwarding protocol like NAT-PMP(uPNP).
+So transmission cannot forwarding the port(s) for peer to peer connection.
+
+Solutions:
+	- Use `-p 51413:51413/tcp -p 51413:51413/udp` expose transmission port on host, then statically forward these ports to the host from your router.
+	- Use `--net=host` so docker will not running the container at docker network, the container will listen on the host's network interface directly.(Recommand, but only works on Linux hosts)
+	- Teach docker how to handle uPNP (very hard)
+
