@@ -72,7 +72,7 @@ Docker network will NATs the container's traffic. But docker bridge not support 
 So transmission cannot forwarding the port(s) for peer to peer connection.
 
 Solutions:
-	- Use `-p 51413:51413/tcp -p 51413:51413/udp` expose transmission port on host, then statically forward these ports to the host from your router.
-	- Use `--net=host` so docker will not running the container at docker network, the container will listen on the host's network interface directly.(Recommand, but only works on Linux hosts)
-	- Teach docker how to handle uPNP (very hard)
+* Use `-p 51413:51413/tcp -p 51413:51413/udp` expose transmission port on host, then statically forward these ports to the host from your router.
+* Use `--net=host` so docker will not running the container at docker network, the container will listen on the host's network interface directly.(Recommand, but only works on Linux hosts)
+* Teach docker how to handle uPNP (very hard)
 
