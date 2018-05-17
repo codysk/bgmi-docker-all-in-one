@@ -18,3 +18,4 @@ RUN { \
 EXPOSE 80 9091
 
 ENTRYPOINT ["/home/bgmi-docker/entrypoint.sh"]
+
