@@ -4,9 +4,9 @@ services:
   - docker
 
 script:
-  - docker build -t $DOCKERHUB_ACCOUNT/$IMAGE_NAME ./
+  - travis_wait 30 docker build -t $DOCKERHUB_ACCOUNT/$IMAGE_NAME ./
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-  - docker build -f Dockerfile.armhf -t $DOCKERHUB_ACCOUNT/$IMAGE_NAME:armhf ./
+  - travis_wait 60 docker build -f Dockerfile.armhf -t $DOCKERHUB_ACCOUNT/$IMAGE_NAME:armhf ./
 
 after_success:
   - docker images
