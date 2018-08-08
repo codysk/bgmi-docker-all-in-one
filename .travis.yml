@@ -5,13 +5,19 @@ services:
 
 script:
   - docker build -t $DOCKERHUB_ACCOUNT/$IMAGE_NAME ./
+  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+  - docker build -f Dockerfile.armhf -t $DOCKERHUB_ACCOUNT/$IMAGE_NAME:armhf ./
 
 after_success:
   - docker images
   - if [ "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ] && [ ! -z $TRAVIS_TAG ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     docker login -u="$DOCKERHUB_ACCOUNT" -p="$DOCKERHUB_PASSWD";
     docker tag $DOCKERHUB_ACCOUNT/$IMAGE_NAME $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG;
+    docker tag $DOCKERHUB_ACCOUNT/$IMAGE_NAME:armhf $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG-armhf;
     docker tag $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG $DOCKERHUB_ACCOUNT/$IMAGE_NAME:latest;
+    docker tag $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG-armhf $DOCKERHUB_ACCOUNT/$IMAGE_NAME:latest-armhf;
     docker push $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG;
+    docker push $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG-armhf;
     docker push $DOCKERHUB_ACCOUNT/$IMAGE_NAME:latest;
+    docker push $DOCKERHUB_ACCOUNT/$IMAGE_NAME:latest-armhf;
     fi
