@@ -2,9 +2,12 @@
 
 first_lock="/bgmi_install.lock"
 bangumi_db="$BGMI_PATH/bangumi.db"
+transmission_setting="/bgmi/conf/transmission/settings.json"
 
 data_source="bangumi_moe"	#default data source set to bangumi.moe
 admin_token="bgmi_token" #default admin token
+
+pid=0
 
 function init_proc {
 	touch $first_lock
@@ -38,11 +41,31 @@ function init_proc {
 	cp /home/bgmi-docker/config/bgmi_nginx.conf /etc/nginx/conf.d/default.conf
 	cp /home/bgmi-docker/config/bgmi_supervisord.ini /etc/supervisor.d/bgmi_supervisord.ini
 	cp /home/bgmi-docker/config/transmission-daemon /etc/conf.d/transmission-daemon
-	cp /home/bgmi-docker/config/transmission_settings.json /bgmi/conf/transmission/settings.json
+	
+	if [ ! -f $transmission_setting ]; then
+		cp /home/bgmi-docker/config/transmission_settings.json $transmission_setting
+	fi
+}
+
+function exit_proc {
+	kill ${!}
+	kill -SIGTERM "$pid"
+	wait "$pid"
+	exit 143;
 }
 
 if [ ! -f $first_lock ]; then
 	init_proc
 fi
 
-/usr/bin/supervisord -n
+trap 'exit_proc' SIGINT
+trap 'exit_proc' SIGTERM
+trap 'exit_proc' SIGQUIT
+
+/usr/bin/supervisord -n &
+pid="$!"
+
+while true
+do
+	tail -f /dev/null & wait ${!}
+done
