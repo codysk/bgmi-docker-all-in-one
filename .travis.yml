@@ -2,10 +2,15 @@ os:
   - linux
 services:
   - docker
+before_script:
+  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+  - wget https://github.com/multiarch/qemu-user-static/releases/download/v2.12.0-1/qemu-arm-static -O /tmp/qemu-arm-static
+  - chmod +x /tmp/qemu-arm-static
 
 script:
   - travis_wait 30 docker build -t $DOCKERHUB_ACCOUNT/$IMAGE_NAME ./
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+  - cp /tmp/qemu-arm-static ./
   - travis_wait 60 docker build -f Dockerfile.armhf -t $DOCKERHUB_ACCOUNT/$IMAGE_NAME:armhf ./
 
 after_success:

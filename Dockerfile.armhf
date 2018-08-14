@@ -1,7 +1,9 @@
-FROM multiarch/alpine:armhf-v3.7
+FROM arm32v6/alpine:3.7
 MAINTAINER me@iskywind.com
 
 VOLUME ["/bgmi"]
+
+COPY ./qemu-arm-static /usr/bin/qemu-arm-static
 
 ENV LANG=C.UTF-8 BGMI_PATH="/bgmi/conf/bgmi"
 ADD ./ /home/bgmi-docker
