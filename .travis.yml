@@ -9,7 +9,6 @@ before_script:
 
 script:
   - travis_wait 30 docker build -t $DOCKERHUB_ACCOUNT/$IMAGE_NAME ./
-  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   - cp /tmp/qemu-arm-static ./
   - travis_wait 60 docker build -f Dockerfile.armhf -t $DOCKERHUB_ACCOUNT/$IMAGE_NAME:armhf ./
 
