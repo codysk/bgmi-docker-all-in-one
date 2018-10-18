@@ -4,6 +4,7 @@ services:
   - docker
 before_script:
   - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+  - cat ~/.docker/config.json
   - sudo service docker restart
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   - wget https://github.com/multiarch/qemu-user-static/releases/download/v2.12.0-1/qemu-arm-static -O /tmp/qemu-arm-static
