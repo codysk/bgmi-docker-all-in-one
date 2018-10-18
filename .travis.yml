@@ -4,6 +4,7 @@ services:
   - docker
 before_script:
   - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+  - echo '{"experimental":"enabled"}' | sudo tee ~/.docker/config.json
   - docker manifest
   - sudo service docker restart
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
