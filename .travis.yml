@@ -9,7 +9,7 @@ addons:
 before_script:
   - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
   - mkdir -p ~/.docker
-  - echo '{"experimental":"enabled"}' | sudo tee ~/.docker/config.json
+  - echo '{"experimental":"enabled"}' | tee ~/.docker/config.json
   - sudo service docker restart
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   - wget https://github.com/multiarch/qemu-user-static/releases/download/v2.12.0-1/qemu-arm-static -O /tmp/qemu-arm-static
@@ -41,5 +41,7 @@ after_success:
     docker manifest annotate --arch amd64 $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG-amd64;
     docker manifest annotate --arch arm $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG-armhf;
 
+    docker manifest push $DOCKERHUB_ACCOUNT/$IMAGE_NAME:latest;
+    docker manifest push $DOCKERHUB_ACCOUNT/$IMAGE_NAME:$TRAVIS_TAG;
 
     fi
