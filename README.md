@@ -39,7 +39,7 @@ you can mount it at host filesystem if your want
 
 example:
 ```
-docker run -v /home/codysk/bgmi:/bgmi -p 80:80 -p 9091:9091 -e BGMI_SOURCE=dmhy -e BGMI_ADMIN_TOKEN=admin codysk/bgmi-all-in-one
+docker run -v /home/codysk/bgmi:/bgmi -p 80:80 -p 9091:9091 -e BGMI_SOURCE=dmhy -e BGMI_ADMIN_TOKEN=admin -e TZ=Asia/Hongkong codysk/bgmi-all-in-one
 ```
 
 ## Usage:
