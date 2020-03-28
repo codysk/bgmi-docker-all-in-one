@@ -3,6 +3,7 @@
 first_lock="/bgmi_install.lock"
 bangumi_db="$BGMI_PATH/bangumi.db"
 transmission_setting="/bgmi/conf/transmission/settings.json"
+bgmi_nginx_conf="/bgmi/conf/nginx/bgmi.conf"
 
 data_source="bangumi_moe"	#default data source set to bangumi.moe
 admin_token="bgmi_token" #default admin token
@@ -34,16 +35,22 @@ function init_proc {
 	mkdir -p /var/run/nginx
 	mkdir -p /bgmi/conf/bgmi
 	mkdir -p /bgmi/conf/transmission
+	mkdir -p /bgmi/conf/nginx
 	mkdir -p /bgmi/log
 	mkdir -p /bgmi/bangumi
 	mkdir -p /etc/supervisor.d
 
-	cp /home/bgmi-docker/config/bgmi_nginx.conf /etc/nginx/conf.d/default.conf
+	rm -rf /etc/nginx/conf.d
+	ln -s /bgmi/conf/nginx /etc/nginx/conf.d
 	cp /home/bgmi-docker/config/bgmi_supervisord.ini /etc/supervisor.d/bgmi_supervisord.ini
 	cp /home/bgmi-docker/config/transmission-daemon /etc/conf.d/transmission-daemon
-	
+
 	if [ ! -f $transmission_setting ]; then
 		cp /home/bgmi-docker/config/transmission_settings.json $transmission_setting
+	fi
+
+	if [ ! -f $bgmi_nginx_conf ]; then
+		cp /home/bgmi-docker/config/bgmi_nginx.conf $bgmi_nginx_conf
 	fi
 }
 
