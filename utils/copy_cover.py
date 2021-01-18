@@ -4,7 +4,7 @@ from shutil import copy
 from bgmi.config import SAVE_PATH
 from bgmi.lib.models import STATUS_DELETED, STATUS_UPDATING, Followed
 from bgmi.script import ScriptRunner
-from bgmi.utils.utils import normalize_path
+from bgmi.utils import normalize_path
 
 print(SAVE_PATH)
 
