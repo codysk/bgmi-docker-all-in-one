@@ -1,0 +1,93 @@
+name: build docker image
+
+on: ["push"]
+
+env:
+  IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
+  DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  GHCR_USER: ${{ secrets.GHCR_USER }}
+  GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+  REPO_OWNER: ${{ github.repository_owner }}
+
+jobs:
+  bgmi-docker-image:
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/') }}
+    steps:
+      - name: export TAG Variable
+        run: |
+          if [[ $IS_RELEASE = 'true' ]]; then
+              TAGS=${GITHUB_REF:10}
+          else
+              TAGS=${GITHUB_REF:11}-branch
+          fi
+
+          NEED_PUSH='false'
+          IMAGE_TAG=
+          if [[ -n $DOCKERHUB_USER ]]; then
+
+              IMAGE_TAG="$IMAGE_TAG
+          $DOCKERHUB_USER/bgmi-all-in-one:$TAGS"
+
+              if [[ $IS_RELEASE = 'true' ]]; then
+                IMAGE_TAG="$IMAGE_TAG
+          $DOCKERHUB_USER/bgmi-all-in-one:latest"
+              fi
+
+              NEED_PUSH='true'
+          fi
+          if [[ -n $GHCR_USER ]]; then
+
+              IMAGE_TAG="$IMAGE_TAG
+          ghcr.io/$GHCR_USER/bgmi-all-in-one:$TAGS"
+
+              if [[ $IS_RELEASE = 'true' ]]; then
+                IMAGE_TAG="$IMAGE_TAG
+          ghcr.io/$GHCR_USER/bgmi-all-in-one:latest"
+              fi
+
+              NEED_PUSH='true'
+          fi
+
+          if [[ $NEED_PUSH = 'false' ]]; then
+              IMAGE_TAG="$IMAGE_TAG
+          $REPO_OWNER/bgmi-all-in-one:$TAGS"
+          fi
+          IMAGE_TAG=${IMAGE_TAG:1}
+
+          echo "IMAGE_TAG=$IMAGE_TAG"
+          echo "NEED_PUSH=$NEED_PUSH"
+          echo "TAGS=$TAGS"
+          
+          echo "IMAGE_TAG<<EOF" >> $GITHUB_ENV
+          echo "$IMAGE_TAG" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+          echo "NEED_PUSH=$NEED_PUSH" >> $GITHUB_ENV
+          echo "TAGS=$TAGS" >> $GITHUB_ENV
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USER }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+          push: ${{ env.NEED_PUSH == 'true' }}
+          tags: ${{ env.IMAGE_TAG }}
