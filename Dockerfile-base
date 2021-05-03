@@ -1,5 +1,5 @@
 FROM alpine:3.12
-MAINTAINER me@iskywind.com
+LABEL maintainer="me@iskywind.com"
 
 RUN { \
 	apk add --update linux-headers gcc python3-dev libffi-dev openssl-dev libxslt-dev zlib-dev libxml2-dev musl-dev nginx bash supervisor transmission-daemon python3 cargo curl tzdata; \

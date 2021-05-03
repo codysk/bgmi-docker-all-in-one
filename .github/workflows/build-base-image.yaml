@@ -27,11 +27,11 @@ jobs:
           if [[ -n $DOCKERHUB_USER ]]; then
 
               IMAGE_TAG="$IMAGE_TAG
-          $DOCKERHUB_USER/bgmi-all-in-one:$SHORT_TAG"
+          $DOCKERHUB_USER/bgmi-all-in-one-base:$SHORT_TAG"
 
               if [[ $IS_RELEASE = 'true' ]]; then
                 IMAGE_TAG="$IMAGE_TAG
-          $DOCKERHUB_USER/bgmi-all-in-one:latest"
+          $DOCKERHUB_USER/bgmi-all-in-one-base:latest"
               fi
 
               NEED_PUSH='true'
@@ -39,11 +39,11 @@ jobs:
           if [[ -n $GHCR_USER ]]; then
 
               IMAGE_TAG="$IMAGE_TAG
-          ghcr.io/$GHCR_USER/bgmi-all-in-one:$SHORT_TAG"
+          ghcr.io/$GHCR_USER/bgmi-all-in-one-base:$SHORT_TAG"
 
               if [[ $IS_RELEASE = 'true' ]]; then
                 IMAGE_TAG="$IMAGE_TAG
-          ghcr.io/$GHCR_USER/bgmi-all-in-one:latest"
+          ghcr.io/$GHCR_USER/bgmi-all-in-one-base:latest"
               fi
 
               NEED_PUSH='true'
@@ -51,7 +51,7 @@ jobs:
 
           if [[ $NEED_PUSH = 'false' ]]; then
               IMAGE_TAG="$IMAGE_TAG
-          $REPO_OWNER/bgmi-all-in-one:$SHORT_TAG"
+          $REPO_OWNER/bgmi-all-in-one-base:$SHORT_TAG"
           fi
           IMAGE_TAG=${IMAGE_TAG:1}
 
