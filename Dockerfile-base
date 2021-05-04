@@ -1,15 +1,9 @@
 FROM alpine:3.12
-MAINTAINER me@iskywind.com
-
-ADD ./BGmi/poetry.lock /home/poetry/
-ADD ./BGmi/pyproject.toml /home/poetry/
+LABEL maintainer="me@iskywind.com"
 
 RUN { \
 	apk add --update linux-headers gcc python3-dev libffi-dev openssl-dev libxslt-dev zlib-dev libxml2-dev musl-dev nginx bash supervisor transmission-daemon python3 cargo curl tzdata; \
 	curl https://bootstrap.pypa.io/get-pip.py | python3; \
-	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 -; \
-	cd /home/poetry/; \
-	/root/.local/bin/poetry install; \
 	pip install 'requests[security]'; \
 	pip install 'transmissionrpc'; \
 }
