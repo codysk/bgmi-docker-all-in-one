@@ -1,0 +1,12 @@
+FROM ghcr.io/codysk/bgmi-all-in-one-base:1.1  AS test-env
+MAINTAINER me@iskywind.com
+
+ENV LANG=C.UTF-8 BGMI_PATH="/bgmi/conf/bgmi"
+ADD ./ /home/bgmi-docker
+WORKDIR /home/bgmi-docker/BGmi
+
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 - && \
+	source $HOME/.poetry/env && \
+	poetry install && \
+	poetry run bgmi.main install && \
+	poetry run pytest
