@@ -46,6 +46,25 @@ Example:
 docker run -v /home/codysk/bgmi:/bgmi -p 80:80 -p 9091:9091 -e BGMI_SOURCE=dmhy -e BGMI_ADMIN_TOKEN=admin -e TZ=Asia/Hongkong codysk/bgmi-all-in-one
 ```
 
+Docker compose file example (Host network):
+```
+version: '2'
+services:
+  bgmi:
+    image: ghcr.io/codysk/bgmi-all-in-one:latest
+    # build: ./bgmi-docker-all-in-one
+    container_name: "bgmi"
+    restart: "always"
+    volumes:
+      - ./data:/bgmi
+    network_mode: "host"
+    # env_file: env.conf
+    environment:
+      - BGMI_SOURCE=dmhy
+      - BGMI_ADMIN_TOKEN=admin
+      - TZ=Asia/Shanghai
+```
+
 ## Usage:
 
 ### command line interface
