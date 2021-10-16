@@ -7,6 +7,13 @@ WORKDIR /home/bgmi-docker/BGmi
 
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 - && \
 	source $HOME/.poetry/env && \
+        python3 -m venv .venv && \
+        source .venv/bin/activate && \
+	poetry build && \
 	poetry install && \
-	poetry run bgmi.main install && \
-	poetry run pytest
+	pip install coverage[toml] && \
+	coverage run -a -m bgmi.main install && \
+	bgmi -h && \
+	coverage run -a -m pytest tests \
+            --cache-requests --reruns=2 --reruns-delay=1 --maxfail=2 \
+            --ignore=tests/downloader
