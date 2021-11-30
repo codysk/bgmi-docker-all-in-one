@@ -54,25 +54,8 @@ function init_proc {
 	fi
 }
 
-function exit_proc {
-	kill ${!}
-	kill -SIGTERM "$pid"
-	wait "$pid"
-	exit 143;
-}
-
 if [ ! -f $first_lock ]; then
 	init_proc
 fi
 
-trap 'exit_proc' SIGINT
-trap 'exit_proc' SIGTERM
-trap 'exit_proc' SIGQUIT
-
-/usr/bin/supervisord -n &
-pid="$!"
-
-while true
-do
-	tail -f /dev/null & wait ${!}
-done
+exec /usr/bin/supervisord -n
