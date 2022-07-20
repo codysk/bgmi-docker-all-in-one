@@ -52,6 +52,11 @@ function init_proc {
 	if [ ! -f $bgmi_nginx_conf ]; then
 		cp /home/bgmi-docker/config/bgmi_nginx.conf $bgmi_nginx_conf
 	fi
+
+	if [ ! -z $NO_TRANSMISSION ]; then
+		sed -i '/\[program:tran.*$/,/stderr=true/d' /etc/supervisor.d/bgmi_supervisord.ini
+		sed -i '/^programs/s/transmission,//g' /etc/supervisor.d/bgmi_supervisord.ini
+	fi
 }
 
 if [ ! -f $first_lock ]; then
