@@ -7,7 +7,7 @@ ENV LANG=C.UTF-8 BGMI_PATH="/bgmi/conf/bgmi"
 ADD ./ /home/bgmi-docker
 
 RUN { \
-	pip install /home/bgmi-docker/BGmi; \
+	pip install /home/bgmi-docker/BGmi && \
 	chmod +x /home/bgmi-docker/entrypoint.sh; \
 }
 

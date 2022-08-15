@@ -8,6 +8,9 @@ bgmi_nginx_conf="/bgmi/conf/nginx/bgmi.conf"
 data_source="bangumi_moe"	#default data source set to bangumi.moe
 admin_token="bgmi_token" #default admin token
 
+user_id=0
+group_id=0
+
 pid=0
 
 function init_proc {
@@ -56,6 +59,12 @@ function init_proc {
 	if [ ! -z $NO_TRANSMISSION ]; then
 		sed -i '/\[program:tran.*$/,/stderr=true/d' /etc/supervisor.d/bgmi_supervisord.ini
 		sed -i '/^programs/s/transmission,//g' /etc/supervisor.d/bgmi_supervisord.ini
+	fi
+
+	if [ ! -z $OVERRIDE_USER ]; then
+		sed 's/<OVERRIDE_USER>/$OVERRIDE_USER/g' /home/bgmi-docker/utils/override_perm.sh.template > /bgmi/conf/bgmi/override_perm.sh
+		(crontab -l;printf "*/2 * * * * bash /bgmi/conf/bgmi/override_perm.sh\n")|crontab - 
+		echo "[+] crontab override perm script added"
 	fi
 }
 

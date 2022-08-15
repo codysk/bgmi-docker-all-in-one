@@ -38,6 +38,7 @@ Here is a few envirmonment variables to init the bgmi service
 * BGMI_SOURCE - set bgmi default data source (bangumi_moe, mikan_project or dmhy)
 * BGMI_ADMIN_TOKEN - set bgmi web interface auth token (default token will be `bgmi_token` when this variable is not set or empty)
 * NO_TRANSMISSION - dont start transmission(for advanced user)
+* OVERRIDE_USER - start a cron task to override the bangumi directory's owner (e.g.: OVERRIDE_USER=1000:1000)
 
 All data volumn and configurable directory/file mount at `/bgmi`
 you can mount it at host filesystem if your want
