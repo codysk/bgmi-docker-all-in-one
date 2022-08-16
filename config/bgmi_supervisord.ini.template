@@ -6,12 +6,14 @@ command=bgmi_http
 autorestart=true
 stdout_logfile=/bgmi/log/bgmi_http.log
 redirect_stderr=true
+user=<USERNAME>
 
 [program:transmission]
 command=transmission-daemon -f -g /bgmi/conf/transmission/
 autorestart=true
 stdout_logfile=/bgmi/log/transmission_out.log
 redirect_stderr=true
+user=<USERNAME>
 
 [program:nginx]
 command=nginx -g "daemon off;"

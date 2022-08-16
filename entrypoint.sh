@@ -10,8 +10,38 @@ admin_token="bgmi_token" #default admin token
 
 user_id=0
 group_id=0
+username=root
 
 pid=0
+
+function fix_perm {
+	username='overrideuser'
+	groupname=overridegroup''
+	userent=`getent passwd $user_id`
+	if [[ $? == 0 ]]; then
+		IFS=':'
+		read -a userinfo <<< "$userent"
+		username="${userinfo[0]}"
+		IFS=''
+	else
+		adduser -D -u $user_id $username
+	fi
+
+	groupent=`getent group $group_id`
+	if [[ $? == 0 ]]; then
+		IFS=':'
+		read -a groupinfo <<< "$groupent"
+		groupname="${groupinfo[0]}"
+		IFS=''
+	fi
+
+	addgroup -g $group_id $username $groupname > /dev/null 2>&1 || echo "addgroup fail, skipped"
+
+	chown -R $OVERRIDE_USER /bgmi/*
+	
+	crontab -r
+	sudo -u $username bash /home/bgmi-docker/BGmi/bgmi/others/crontab.sh
+}
 
 function init_proc {
 	touch $first_lock
@@ -43,11 +73,6 @@ function init_proc {
 	mkdir -p /bgmi/bangumi
 	mkdir -p /etc/supervisor.d
 
-	rm -rf /etc/nginx/conf.d
-	ln -s /bgmi/conf/nginx /etc/nginx/conf.d
-	cp /home/bgmi-docker/config/bgmi_supervisord.ini /etc/supervisor.d/bgmi_supervisord.ini
-	cp /home/bgmi-docker/config/transmission-daemon /etc/conf.d/transmission-daemon
-
 	if [ ! -f $transmission_setting ]; then
 		cp /home/bgmi-docker/config/transmission_settings.json $transmission_setting
 	fi
@@ -65,7 +90,19 @@ function init_proc {
 		sed 's/<OVERRIDE_USER>/$OVERRIDE_USER/g' /home/bgmi-docker/utils/override_perm.sh.template > /bgmi/conf/bgmi/override_perm.sh
 		(crontab -l;printf "*/2 * * * * bash /bgmi/conf/bgmi/override_perm.sh\n")|crontab - 
 		echo "[+] crontab override perm script added"
+		IFS=':'
+		read -a ids <<< "$OVERRIDE_USER"
+		user_id="${ids[0]}"
+		group_id="${ids[1]}"
+		IFS=''
+		fix_perm
 	fi
+
+	rm -rf /etc/nginx/conf.d
+	ln -s /bgmi/conf/nginx /etc/nginx/conf.d
+	
+	sed "s@<USERNAME>@$username@g" /home/bgmi-docker/config/bgmi_supervisord.ini.template > /etc/supervisor.d/bgmi_supervisord.ini
+	cp /home/bgmi-docker/config/transmission-daemon /etc/conf.d/transmission-daemon
 }
 
 if [ ! -f $first_lock ]; then
