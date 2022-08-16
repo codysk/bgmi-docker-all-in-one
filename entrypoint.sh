@@ -87,15 +87,16 @@ function init_proc {
 	fi
 
 	if [ ! -z $OVERRIDE_USER ]; then
-		sed 's/<OVERRIDE_USER>/$OVERRIDE_USER/g' /home/bgmi-docker/utils/override_perm.sh.template > /bgmi/conf/bgmi/override_perm.sh
-		(crontab -l;printf "*/2 * * * * bash /bgmi/conf/bgmi/override_perm.sh\n")|crontab - 
-		echo "[+] crontab override perm script added"
 		IFS=':'
 		read -a ids <<< "$OVERRIDE_USER"
 		user_id="${ids[0]}"
 		group_id="${ids[1]}"
 		IFS=''
 		fix_perm
+
+		sed 's/<OVERRIDE_USER>/$OVERRIDE_USER/g' /home/bgmi-docker/utils/override_perm.sh.template > /bgmi/conf/bgmi/override_perm.sh
+		(crontab -l;printf "*/2 * * * * bash /bgmi/conf/bgmi/override_perm.sh\n")|crontab - 
+		echo "[+] crontab override perm script added"
 	fi
 
 	rm -rf /etc/nginx/conf.d
