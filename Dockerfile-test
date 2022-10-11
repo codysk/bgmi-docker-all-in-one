@@ -5,7 +5,7 @@ ENV LANG=C.UTF-8 BGMI_PATH="/bgmi/conf/bgmi"
 ADD ./ /home/bgmi-docker
 WORKDIR /home/bgmi-docker/BGmi
 
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 - && \
+RUN curl -sSL https://install.python-poetry.org | python3 - && \
 	source $HOME/.poetry/env && \
         python3 -m venv .venv && \
         source .venv/bin/activate && \
