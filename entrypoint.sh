@@ -99,8 +99,8 @@ function init_proc {
 		echo "[+] crontab override perm script added"
 	fi
 
-	rm -rf /etc/nginx/conf.d
-	ln -s /bgmi/conf/nginx /etc/nginx/conf.d
+	rm -rf /etc/nginx/http.d
+	ln -s /bgmi/conf/nginx /etc/nginx/http.d
 	
 	sed "s@<USERNAME>@$username@g" /home/bgmi-docker/config/bgmi_supervisord.ini.template > /etc/supervisor.d/bgmi_supervisord.ini
 	cp /home/bgmi-docker/config/transmission-daemon /etc/conf.d/transmission-daemon
