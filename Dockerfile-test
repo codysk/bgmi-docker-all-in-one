@@ -2,10 +2,11 @@ FROM ghcr.io/codysk/bgmi-all-in-one-base:1.3  AS test-env
 MAINTAINER me@iskywind.com
 
 ENV LANG=C.UTF-8 BGMI_PATH="/bgmi/conf/bgmi"
+ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 ADD ./ /home/bgmi-docker
 WORKDIR /home/bgmi-docker/BGmi
 
-RUN curl -sSL https://install.python-poetry.org | python3 - || cat *.log
+RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.3.2 python3 - || cat *.log
 RUN export PATH="/root/.local/bin:$PATH" && \
 	sh -c 'poetry install -vvv --with dev || cat *.log' && \
 	source $(poetry env info --path)/bin/activate && \
