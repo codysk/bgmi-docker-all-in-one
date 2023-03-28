@@ -1,4 +1,4 @@
-FROM ghcr.io/codysk/bgmi-all-in-one-base:1.3
+FROM ghcr.io/codysk/bgmi-all-in-one-base:1.4
 MAINTAINER me@iskywind.com
 
 VOLUME ["/bgmi"]
