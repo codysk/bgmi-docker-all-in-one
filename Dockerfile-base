@@ -8,6 +8,6 @@ RUN { \
 	curl https://bootstrap.pypa.io/get-pip.py | python3 && \
 	rm -rf ~/.cargo/registry/index && \
 	mkdir -p ~/.cargo/registry/index && \
-	pip install cryptography'; \
+	pip install cryptography; \
 }
 
