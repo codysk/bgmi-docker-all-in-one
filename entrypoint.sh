@@ -1,6 +1,7 @@
 #!/bin/bash
 
 first_lock="/bgmi_install.lock"
+config_lock="$BGMI_PATH/config_modified.lock"
 bangumi_db="$BGMI_PATH/bangumi.db"
 transmission_setting="/bgmi/conf/transmission/settings.json"
 bgmi_nginx_conf="/bgmi/conf/nginx/bgmi.conf"
@@ -56,13 +57,17 @@ function init_proc {
 
 	if [ ! -f $bangumi_db ]; then
 		bgmi install
-		bgmi source $data_source
-		bgmi config ADMIN_TOKEN $admin_token
-		bgmi config SAVE_PATH /bgmi/bangumi
-		bgmi config DOWNLOAD_DELEGATE transmission-rpc
 	else
 		bgmi upgrade
 		bash /home/bgmi-docker/BGmi/bgmi/others/crontab.sh
+	fi
+
+	if [ ! -f $config_lock ]; then
+		sed -i "s/^data_source.*$/data_source = \"$data_source\"/" /bgmi/conf/bgmi/config.toml # bgmi source $data_source
+		sed -i "s/^admin_token.*$/admin_token = \"$admin_token\"/" /bgmi/conf/bgmi/config.toml # bgmi config ADMIN_TOKEN $admin_token
+		sed -i "s/^save_path.*$/save_path = \"\/bgmi\/bangumi\"/" /bgmi/conf/bgmi/config.toml # bgmi config SAVE_PATH /bgmi/bangumi
+		sed -i "s/^download_delegate.*$/download_delegate = \"transmission-rpc\"/" /bgmi/conf/bgmi/config.toml # bgmi config DOWNLOAD_DELEGATE transmission-rpc
+		echo "# docker entrypoint script modified `date`" > $config_lock
 	fi
 
 	mkdir -p /var/run/nginx
