@@ -9,6 +9,6 @@ RUN curl -sSL https://install.python-poetry.org | python3 - || cat *.log
 RUN export PATH="/root/.local/bin:$PATH" && \
 	sh -c 'poetry install -vvv --with dev || cat *.log' && \
 	source $(poetry env info --path)/bin/activate && \
-	coverage run -a -m bgmi.main install && \
-	bgmi -h && \
+	coverage run -a -m bgmi install && \
+	bgmi --help && \
 	coverage run -a -m pytest tests --cache-requests --ignore=tests/downloader
