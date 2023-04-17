@@ -59,8 +59,10 @@ function init_proc {
 		bgmi install
 	else
 		bgmi upgrade
-		bash /home/bgmi-docker/BGmi/bgmi/others/crontab.sh
 	fi
+
+	# init cron task
+	bash /home/bgmi-docker/BGmi/bgmi/others/crontab.sh
 
 	if [ ! -f $config_lock ]; then
 		sed -i "s/^data_source.*$/data_source = \"$data_source\"/" /bgmi/conf/bgmi/config.toml # bgmi source $data_source
