@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 import os
 from shutil import copy
-from bgmi.config import SAVE_PATH
+from bgmi.config import cfg
 from bgmi.lib.models import STATUS_DELETED, STATUS_UPDATING, Followed
 from bgmi.script import ScriptRunner
 from bgmi.utils import normalize_path
 
-print(SAVE_PATH)
+print(cfg.save_path)
 
 def getBangumiList():
 	
@@ -25,10 +25,10 @@ def getBangumiList():
 def copyCover2BangumiDirectory(bangumi=None):
 	if bangumi is None:
 		return
-	coverBase = os.path.join(SAVE_PATH, 'cover')
+	coverBase = os.path.join(cfg.save_path, 'cover')
 
 	coverPath = os.path.join(coverBase, bangumi['cover'])
-	bangumiDir = os.path.join(SAVE_PATH, bangumi['name'])
+	bangumiDir = os.path.join(cfg.save_path, bangumi['name'])
 
 	print("copy: %s -> %s" % (coverPath, bangumiDir))
 	copy(coverPath, bangumiDir)
