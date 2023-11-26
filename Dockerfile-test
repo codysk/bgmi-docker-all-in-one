@@ -5,6 +5,8 @@ ENV LANG=C.UTF-8 BGMI_PATH="/bgmi/conf/bgmi"
 ADD ./ /home/bgmi-docker
 WORKDIR /home/bgmi-docker/BGmi
 
+RUN apk add --update g++
+
 RUN curl -sSL https://install.python-poetry.org | python3 - || cat *.log
 RUN export PATH="/root/.local/bin:$PATH" && \
 	sh -c 'poetry install -vvv --with dev || cat *.log' && \
