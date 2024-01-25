@@ -88,11 +88,6 @@ function init_proc {
 		cp /home/bgmi-docker/config/bgmi_nginx.conf $bgmi_nginx_conf
 	fi
 
-	if [ ! -z $NO_TRANSMISSION ]; then
-		sed -i '/\[program:tran.*$/,/stderr=true/d' /etc/supervisor.d/bgmi_supervisord.ini
-		sed -i '/^programs/s/transmission,//g' /etc/supervisor.d/bgmi_supervisord.ini
-	fi
-
 	if [ ! -z $OVERRIDE_USER ]; then
 		IFS=':'
 		read -a ids <<< "$OVERRIDE_USER"
@@ -111,6 +106,11 @@ function init_proc {
 	
 	sed "s@<USERNAME>@$username@g" /home/bgmi-docker/config/bgmi_supervisord.ini.template > /etc/supervisor.d/bgmi_supervisord.ini
 	cp /home/bgmi-docker/config/transmission-daemon /etc/conf.d/transmission-daemon
+
+	if [ ! -z $NO_TRANSMISSION ]; then
+		sed -i '/\[program:tran.*$/,/stderr=true/d' /etc/supervisor.d/bgmi_supervisord.ini
+		sed -i '/^programs/s/transmission,//g' /etc/supervisor.d/bgmi_supervisord.ini
+	fi
 }
 
 if [ ! -f $first_lock ]; then
