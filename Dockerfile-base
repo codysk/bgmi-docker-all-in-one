@@ -4,10 +4,8 @@ LABEL maintainer="me@iskywind.com"
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 
 RUN { \
-	apk add --update git linux-headers gcc python3-dev libffi-dev openssl-dev cargo libxslt-dev zlib-dev libxml2-dev musl-dev nginx bash supervisor transmission-daemon python3 cargo curl tzdata && \
+	apk add --update git linux-headers gcc python3-dev libffi-dev openssl-dev libxslt-dev zlib-dev libxml2-dev musl-dev nginx bash supervisor transmission-daemon python3 curl tzdata && \
 	curl https://bootstrap.pypa.io/get-pip.py | python3 && \
-	rm -rf ~/.cargo/registry/index && \
-	mkdir -p ~/.cargo/registry/index && \
 	pip install cryptography; \
 }
 
