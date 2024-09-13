@@ -1,11 +1,23 @@
-FROM alpine:3.17
+FROM alpine:3.17 as wheels-builder
 LABEL maintainer="me@iskywind.com"
 
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 
+WORKDIR /wheelhouse
+
 RUN { \
-	apk add --update git linux-headers gcc python3-dev libffi-dev openssl-dev libxslt-dev zlib-dev libxml2-dev musl-dev nginx bash supervisor transmission-daemon python3 curl tzdata && \
+	apk add --update cargo git linux-headers gcc python3-dev libffi-dev openssl-dev libxslt-dev zlib-dev libxml2-dev musl-dev nginx bash supervisor transmission-daemon python3 curl tzdata && \
 	curl https://bootstrap.pypa.io/get-pip.py | python3 && \
-	pip install cryptography; \
+	pip wheel cryptography; \
 }
 
+FROM alpine:3.17
+LABEL maintainer="me@iskywind.com"
+
+COPY --from=wheels-builder /wheelhouse /wheelhouse
+
+RUN { \
+	apk add --update nginx bash supervisor transmission-daemon python3 curl tzdata && \
+	curl https://bootstrap.pypa.io/get-pip.py | python3 && \
+	pip install --no-index --find-links=/wheelhouse cryptography; \
+}
