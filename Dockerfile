@@ -1,4 +1,4 @@
-FROM ghcr.io/codysk/bgmi-all-in-one-base:1.6
+FROM ghcr.io/codysk/bgmi-all-in-one-base:1.7
 MAINTAINER me@iskywind.com
 
 LABEL org.opencontainers.image.source=https://github.com/codysk/bgmi-docker-all-in-one
