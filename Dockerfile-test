@@ -1,4 +1,4 @@
-FROM ghcr.io/codysk/bgmi-all-in-one-base:1.5  AS test-env
+FROM ghcr.io/codysk/bgmi-all-in-one-base:1.7  AS test-env
 MAINTAINER me@iskywind.com
 
 ENV LANG=C.UTF-8 BGMI_PATH="/bgmi/conf/bgmi"

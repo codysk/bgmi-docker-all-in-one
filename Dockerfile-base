@@ -8,7 +8,7 @@ WORKDIR /wheelhouse
 RUN { \
 	apk add --update cargo git linux-headers gcc python3-dev libffi-dev openssl-dev libxslt-dev zlib-dev libxml2-dev musl-dev nginx bash supervisor transmission-daemon python3 curl tzdata && \
 	curl https://bootstrap.pypa.io/get-pip.py | python3 - --break-system-packages  && \
-	pip wheel cryptography; \
+	pip wheel cryptography dulwich msgpack rapidfuzz; \
 }
 
 FROM alpine:3.20
@@ -17,7 +17,9 @@ LABEL maintainer="me@iskywind.com"
 COPY --from=wheels-builder /wheelhouse /wheelhouse
 
 RUN { \
-	apk add --update nginx bash supervisor transmission-daemon python3 curl tzdata && \
+	apk add --update nginx bash supervisor transmission-daemon python3 python3-dev curl tzdata && \
 	curl https://bootstrap.pypa.io/get-pip.py | python3 - --break-system-packages && \
 	pip install --break-system-packages --no-index --find-links=/wheelhouse cryptography; \
 }
+
+ENV PIP_FIND_LINKS=/wheelhouse
