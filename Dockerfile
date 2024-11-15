@@ -10,9 +10,13 @@ ADD ./ /home/bgmi-docker
 
 RUN { \
 	apk add sudo busybox-suid && \
+	pip -m venv /home/bgmi-docker/.venv && \
+	source /home/bgmi-docker/.venv/bin/activate && \
 	pip install /home/bgmi-docker/BGmi && \
 	chmod +x /home/bgmi-docker/entrypoint.sh; \
 }
+
+ENV PATH="/home/bgmi-docker/.venv/bin:$PATH"
 
 EXPOSE 80 9091
 
