@@ -105,7 +105,7 @@ function init_proc {
 	ln -s /bgmi/conf/nginx /etc/nginx/http.d
 	
 	sed "s@<USERNAME>@$username@g" /home/bgmi-docker/config/bgmi_supervisord.ini.template > /etc/supervisor.d/bgmi_supervisord.ini
-	cp /home/bgmi-docker/config/transmission-daemon /etc/conf.d/transmission-daemon
+	# cp /home/bgmi-docker/config/transmission-daemon /etc/conf.d/transmission-daemon
 
 	if [ ! -z $NO_TRANSMISSION ]; then
 		sed -i '/\[program:tran.*$/,/stderr=true/d' /etc/supervisor.d/bgmi_supervisord.ini
