@@ -7,9 +7,14 @@ WORKDIR /home/bgmi-docker/BGmi
 
 RUN apk add --update g++
 
-RUN curl -sSL https://install.python-poetry.org | python3 - || cat *.log
-RUN export PATH="/root/.local/bin:$PATH" && \
-	sh -c 'poetry install -vvv --with dev || cat *.log' && \
+ENV POETRY_HOME=/opt/poetry
+ENV PATH=$POETRY_HOME/bin:$PATH
+
+# RUN curl -sSL https://install.python-poetry.org | python3 - || cat *.log
+RUN python3 -m venv $POETRY_HOME && \
+	$POETRY_HOME/bin/pip install /wheelhouse/*.whl && \
+	$POETRY_HOME/bin/pip install poetry
+RUN sh -c 'poetry install -vvv --with dev || cat *.log' && \
 	source $(poetry env info --path)/bin/activate && \
 	coverage run -a -m bgmi install && \
 	bgmi --help && \
