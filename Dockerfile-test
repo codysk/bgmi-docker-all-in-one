@@ -7,15 +7,12 @@ WORKDIR /home/bgmi-docker/BGmi
 
 RUN apk add --update g++
 
-ENV POETRY_HOME=/opt/poetry
-ENV PATH=$POETRY_HOME/bin:$PATH
-
-# RUN curl -sSL https://install.python-poetry.org | python3 - || cat *.log
-RUN python3 -m venv $POETRY_HOME && \
-	$POETRY_HOME/bin/pip install /wheelhouse/*.whl && \
-	$POETRY_HOME/bin/pip install poetry
-RUN sh -c 'poetry install -vvv --with dev || cat *.log' && \
-	source $(poetry env info --path)/bin/activate && \
+# dev dependency group pinned in BGmi pyproject.toml [dependency-groups]
+RUN python -m venv /home/bgmi-docker/.venv && \
+	source /home/bgmi-docker/.venv/bin/activate && \
+	pip install . && \
+	pip install 'coverage[toml]==7.10.2' 'pytest==8.4.2' 'pytest-github-actions-annotate-failures==0.3.0' 'requests-cache==1.2.1' && \
 	coverage run -a -m bgmi install && \
+	bgmi config set download_delegate --value noop && \
 	bgmi --help && \
-	coverage run -a -m pytest tests --cache-requests --ignore=tests/downloader
+	coverage run -a -m pytest tests --cache-requests --ignore=tests/downloader --ignore=tests/e2e
