@@ -86,7 +86,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: ${{ env.NEED_PUSH == 'true' }}
           tags: ${{ env.IMAGE_TAG }}
           file: Dockerfile-base
