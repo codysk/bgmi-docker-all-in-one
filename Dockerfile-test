@@ -1,8 +1,17 @@
+FROM alpine:3.22 AS wheels-builder
+# rpds-py (dependency of mcp -> jsonschema) ships no arm musl wheels;
+# build one with a rust toolchain new enough for edition2024 crates
+RUN apk add --update rust cargo python3 py3-pip && \
+	python3 -m venv /wheelbuilder && \
+	/wheelbuilder/bin/pip wheel rpds-py -w /wheelhouse-extra
+
 FROM ghcr.io/codysk/bgmi-all-in-one-base:1.7  AS test-env
 MAINTAINER me@iskywind.com
 
 ENV LANG=C.UTF-8 BGMI_PATH="/bgmi/conf/bgmi"
 ADD ./ /home/bgmi-docker
+
+COPY --from=wheels-builder /wheelhouse-extra /wheelhouse-extra
 WORKDIR /home/bgmi-docker/BGmi
 
 RUN apk add --update g++
@@ -10,8 +19,7 @@ RUN apk add --update g++
 # dev dependency group pinned in BGmi pyproject.toml [dependency-groups]
 RUN python -m venv /home/bgmi-docker/.venv && \
 	source /home/bgmi-docker/.venv/bin/activate && \
-	pip install . && \
-	pip install 'coverage[toml]==7.10.2' 'pytest==8.4.2' 'pytest-github-actions-annotate-failures==0.3.0' 'requests-cache==1.2.1' && \
+	PIP_FIND_LINKS="/wheelhouse /wheelhouse-extra" pip install --prefer-binary . 'coverage[toml]==7.10.2' 'pytest==8.4.2' 'pytest-github-actions-annotate-failures==0.3.0' 'requests-cache==1.2.1' && \
 	coverage run -a -m bgmi install && \
 	bgmi config set download_delegate --value noop && \
 	bgmi --help && \
