@@ -41,7 +41,7 @@ function fix_perm {
 	chown -R $OVERRIDE_USER /bgmi/*
 	
 	crontab -r
-	sudo -u $username bash /home/bgmi-docker/BGmi/bgmi/others/crontab.sh
+	sudo -u $username /home/bgmi-docker/.venv/bin/python -c "from bgmi.setup import install_crontab; install_crontab()"
 }
 
 function init_proc {
@@ -61,8 +61,8 @@ function init_proc {
 		bgmi upgrade
 	fi
 
-	# init cron task
-	bash /home/bgmi-docker/BGmi/bgmi/others/crontab.sh
+	# init cron task (bgmi v5 installs its own cron entries via bgmi.setup.install_crontab)
+	python -c "from bgmi.setup import install_crontab; install_crontab()"
 
 	if [ ! -f $config_lock ]; then
 		sed -i "s/^data_source.*$/data_source = \"$data_source\"/" /bgmi/conf/bgmi/config.toml # bgmi source $data_source
